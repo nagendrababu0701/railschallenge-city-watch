@@ -3,7 +3,7 @@ require 'test_helper'
 class EmergenciesCreateTest < ActionDispatch::IntegrationTest
   test 'POST /emergencies/ simple creation' do
     post '/emergencies/', emergency: { code: 'E-99999999', fire_severity: 1, police_severity: 2, medical_severity: 3 }
-    json_response = JSON.parse(response.body)
+    json_response = JSON.parse(response.body) if body && body.length >= 2
 
     assert_equal 201, response.status
     assert_equal nil, body['message']
@@ -30,7 +30,7 @@ class EmergenciesCreateTest < ActionDispatch::IntegrationTest
 
   test 'POST /emergencies/ code attribute must be unique' do
     post '/emergencies', emergency: { code: 'E-not-unique', fire_severity: 1, police_severity: 3, medical_severity: 5 }
-    json_response = JSON.parse(body)
+    json_response = JSON.parse(body) if body && body.length >= 2
 
     assert_equal 201, response.status
     assert_equal(nil, json_response['message'])
